@@ -1,0 +1,2076 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="Learn deep learning and deep reinforcement learning math and code easily and quickly. Used by thousands of students and professionals from top tech companies and research institutions.">
+      
+      
+        <link rel="canonical" href="https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_fc_overcomplete_ae/">
+      
+      
+        <meta name="author" content="Ritchie Ng">
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../../docs/assets/favicon.ico">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.0.4">
+    
+    
+      
+        <title>Fully-connected Overcomplete Autoencoder (AE) - Deep Learning Wizard</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/application.451f80e5.css">
+      
+        <link rel="stylesheet" href="../../../assets/stylesheets/application-palette.22915126.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#009688">
+      
+    
+    
+      <script src="../../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../../assets/fonts/material-icons.css">
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="teal" data-md-color-accent="teal">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="../../../#overcomplete-autoencoders-with-pytorch" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://www.deeplearningwizard.com/" title="Deep Learning Wizard" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon">whatshot</i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Deep Learning Wizard
+              </span>
+              <span class="md-header-nav__topic">
+                Fully-connected Overcomplete Autoencoder (AE)
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+        
+
+  
+
+<nav class="md-tabs md-tabs--active" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  <li class="md-tabs__item">
+    
+      <a href="../../.." title="Home" class="md-tabs__link">
+        Home
+      </a>
+    
+  </li>
+
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../intro/" title="Deep Learning Tutorials (CPU/GPU)" class="md-tabs__link md-tabs__link--active">
+          Deep Learning Tutorials (CPU/GPU)
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../machine_learning/intro/" title="Machine Learning Tutorials (CPU/GPU)" class="md-tabs__link">
+          Machine Learning Tutorials (CPU/GPU)
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../programming/intro/" title="Programming Tutorials" class="md-tabs__link">
+          Programming Tutorials
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../database/intro/" title="Scalable Database Tutorials" class="md-tabs__link">
+          Scalable Database Tutorials
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../news/news/" title="News" class="md-tabs__link">
+          News
+        </a>
+      
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://www.deeplearningwizard.com/" title="Deep Learning Wizard" class="md-nav__button md-logo">
+      
+        <i class="md-icon">whatshot</i>
+      
+    </a>
+    Deep Learning Wizard
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../.." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../about/" title="About Us" class="md-nav__link">
+      About Us
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../review/" title="Reviews" class="md-nav__link">
+      Reviews
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../pipeline/" title="AI Pipeline" class="md-nav__link">
+      AI Pipeline
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../consultancy/" title="Consultancy" class="md-nav__link">
+      Consultancy
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+    
+    <label class="md-nav__link" for="nav-6">
+      Deep Learning Tutorials (CPU/GPU)
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Deep Learning Tutorials (CPU/GPU)
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../intro/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../course_progression/" title="Course Progression" class="md-nav__link">
+      Course Progression
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../pytorch_matrices/" title="Matrices" class="md-nav__link">
+      Matrices
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../pytorch_gradients/" title="Gradients" class="md-nav__link">
+      Gradients
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../pytorch_linear_regression/" title="Linear Regression" class="md-nav__link">
+      Linear Regression
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../pytorch_logistic_regression/" title="Logistic Regression" class="md-nav__link">
+      Logistic Regression
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../pytorch_feedforward_neuralnetwork/" title="Feedforward Neural Networks (FNN)" class="md-nav__link">
+      Feedforward Neural Networks (FNN)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../pytorch_convolutional_neuralnetwork/" title="Convolutional Neural Networks (CNN)" class="md-nav__link">
+      Convolutional Neural Networks (CNN)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../pytorch_recurrent_neuralnetwork/" title="Recurrent Neural Networks (RNN)" class="md-nav__link">
+      Recurrent Neural Networks (RNN)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../pytorch_lstm_neuralnetwork/" title="Long Short Term Memory Neural Networks (LSTM)" class="md-nav__link">
+      Long Short Term Memory Neural Networks (LSTM)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../pytorch_autoencoder/" title="Autoencoders (AE)" class="md-nav__link">
+      Autoencoders (AE)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Fully-connected Overcomplete Autoencoder (AE)
+      </label>
+    
+    <a href="./" title="Fully-connected Overcomplete Autoencoder (AE)" class="md-nav__link md-nav__link--active">
+      Fully-connected Overcomplete Autoencoder (AE)
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" title="Introduction" class="md-nav__link">
+    Introduction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fashion-mnist-dataset-exploration" title="Fashion MNIST Dataset Exploration" class="md-nav__link">
+    Fashion MNIST Dataset Exploration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#imports" title="Imports" class="md-nav__link">
+    Imports
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load-dataset-step-1" title="Load Dataset (Step 1)" class="md-nav__link">
+    Load Dataset (Step 1)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load-data-loader-step-2" title="Load Data Loader (Step 2)" class="md-nav__link">
+    Load Data Loader (Step 2)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#labels" title="Labels" class="md-nav__link">
+    Labels
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sample-boot" title="Sample: Boot" class="md-nav__link">
+    Sample: Boot
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sample-shirt" title="Sample: shirt" class="md-nav__link">
+    Sample: shirt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sample-dress" title="Sample: dress" class="md-nav__link">
+    Sample: dress
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maximumminimum-pixel-values" title="Maximum/minimum pixel values" class="md-nav__link">
+    Maximum/minimum pixel values
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overcomplete-autoencoder" title="Overcomplete Autoencoder" class="md-nav__link">
+    Overcomplete Autoencoder
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sigmoid-function" title="Sigmoid Function" class="md-nav__link">
+    Sigmoid Function
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps" title="Steps" class="md-nav__link">
+    Steps
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-3-create-model-class" title="Step 3: Create Model Class" class="md-nav__link">
+    Step 3: Create Model Class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-instantiate-model-class" title="Step 4: Instantiate Model Class" class="md-nav__link">
+    Step 4: Instantiate Model Class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-instantiate-loss-class" title="Step 5: Instantiate Loss Class" class="md-nav__link">
+    Step 5: Instantiate Loss Class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-instantiate-optimizer-class" title="Step 6: Instantiate Optimizer Class" class="md-nav__link">
+    Step 6: Instantiate Optimizer Class
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inspect-parameter-groups" title="Inspect Parameter Groups" class="md-nav__link">
+    Inspect Parameter Groups
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-train-model" title="Step 7: Train Model" class="md-nav__link">
+    Step 7: Train Model
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#model-inference" title="Model Inference" class="md-nav__link">
+    Model Inference
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#raw-sample-1" title="Raw Sample 1" class="md-nav__link">
+    Raw Sample 1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-sample-1-noisy-to-denoised" title="Test Sample 1: Noisy to Denoised" class="md-nav__link">
+    Test Sample 1: Noisy to Denoised
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" title="Summary" class="md-nav__link">
+    Summary
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+        <li class="md-nav__item">
+          <a href="#__comments" title="Comments" class="md-nav__link md-nav__link--active">
+            Comments
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../boosting_models_pytorch/derivative_gradient_jacobian/" title="Derivative, Gradient and Jacobian" class="md-nav__link">
+      Derivative, Gradient and Jacobian
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../boosting_models_pytorch/forwardpropagation_backpropagation_gradientdescent/" title="Forward- and Backward-propagation and Gradient Descent (From Scratch FNN Regression)" class="md-nav__link">
+      Forward- and Backward-propagation and Gradient Descent (From Scratch FNN Regression)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../fromscratch/fromscratch_logistic_regression/" title="From Scratch Logistic Regression Classification" class="md-nav__link">
+      From Scratch Logistic Regression Classification
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../fromscratch/fromscratch_cnn/" title="From Scratch CNN Classification" class="md-nav__link">
+      From Scratch CNN Classification
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../boosting_models_pytorch/lr_scheduling/" title="Learning Rate Scheduling" class="md-nav__link">
+      Learning Rate Scheduling
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../boosting_models_pytorch/optimizers/" title="Optimization Algorithms" class="md-nav__link">
+      Optimization Algorithms
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../boosting_models_pytorch/weight_initialization_activation_functions/" title="Weight Initialization and Activation Functions" class="md-nav__link">
+      Weight Initialization and Activation Functions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deep_reinforcement_learning_pytorch/supervised_to_rl/" title="Supervised Learning to Reinforcement Learning (RL)" class="md-nav__link">
+      Supervised Learning to Reinforcement Learning (RL)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deep_reinforcement_learning_pytorch/bellman_mdp/" title="Markov Decision Processes (MDP) and Bellman Equations" class="md-nav__link">
+      Markov Decision Processes (MDP) and Bellman Equations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deep_reinforcement_learning_pytorch/dynamic_programming_frozenlake/" title="Dynamic Programming" class="md-nav__link">
+      Dynamic Programming
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../production_pytorch/speed_optimization_basics_numba/" title="Speed Optimization Basics Numba" class="md-nav__link">
+      Speed Optimization Basics Numba
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../readings/" title="Additional Readings" class="md-nav__link">
+      Additional Readings
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Machine Learning Tutorials (CPU/GPU)
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Machine Learning Tutorials (CPU/GPU)
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../machine_learning/intro/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../machine_learning/gpu/rapids_cudf/" title="GPU DataFrames" class="md-nav__link">
+      GPU DataFrames
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../machine_learning/gpu/gpu_fractional_differencing/" title="GPU/CPU Fractional Differencing" class="md-nav__link">
+      GPU/CPU Fractional Differencing
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Programming Tutorials
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Programming Tutorials
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../programming/intro/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../programming/cpp/cpp/" title="C++" class="md-nav__link">
+      C++
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../programming/bash/bash/" title="Bash" class="md-nav__link">
+      Bash
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../programming/python/python/" title="Python" class="md-nav__link">
+      Python
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../programming/javascript/javascript/" title="Javascript" class="md-nav__link">
+      Javascript
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../programming/electron/electron/" title="Electron" class="md-nav__link">
+      Electron
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Scalable Database Tutorials
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Scalable Database Tutorials
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../database/intro/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../database/setting_up_cluster/" title="Cassandra Cluster Setup" class="md-nav__link">
+      Cassandra Cluster Setup
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-10" type="checkbox" id="nav-10">
+    
+    <label class="md-nav__link" for="nav-10">
+      News
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-10">
+        News
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../news/news/" title="Welcome" class="md-nav__link">
+      Welcome
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../news/defence_and_science_technology_agency_dsta_nvidia_talk_2016_06/" title="Deep Learning Introduction, Defence and Science Technology Agency (DSTA) and NVIDIA, June 2019" class="md-nav__link">
+      Deep Learning Introduction, Defence and Science Technology Agency (DSTA) and NVIDIA, June 2019
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../news/detect_waterbone_debris_ai_for_social_good_icml_2019_06/" title="Oral Presentation for AI for Social Good Workshop ICML, June 2019" class="md-nav__link">
+      Oral Presentation for AI for Social Good Workshop ICML, June 2019
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../news/it_youth_leader_2019_03_11/" title="IT Youth Leader of The Year 2019, March 2019" class="md-nav__link">
+      IT Youth Leader of The Year 2019, March 2019
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../news/ammi_facebook_google_recap_2018_11_21/" title="AMMI (AIMS) supported by Facebook and Google, November 2018" class="md-nav__link">
+      AMMI (AIMS) supported by Facebook and Google, November 2018
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../news/nanjing_next_nus_tsinghua_ai_finance_healthcare_2018_11_01/" title="NExT++ AI in Healthcare and Finance, Nanjing, November 2018" class="md-nav__link">
+      NExT++ AI in Healthcare and Finance, Nanjing, November 2018
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../news/facebook_pytorch_devcon_recap_2018_10_02/" title="Recap of Facebook PyTorch Developer Conference, San Francisco, September 2018" class="md-nav__link">
+      Recap of Facebook PyTorch Developer Conference, San Francisco, September 2018
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../news/facebook_pytorch_developer_conference_2018_09_05/" title="Facebook PyTorch Developer Conference, San Francisco, September 2018" class="md-nav__link">
+      Facebook PyTorch Developer Conference, San Francisco, September 2018
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../news/nvidia_nus_mit_datathon_2018_07_05/" title="NUS-MIT-NUHS NVIDIA Image Recognition Workshop, Singapore, July 2018" class="md-nav__link">
+      NUS-MIT-NUHS NVIDIA Image Recognition Workshop, Singapore, July 2018
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../news/deep_learning_wizard_1y_2018_06_01/" title="Featured on PyTorch Website 2018" class="md-nav__link">
+      Featured on PyTorch Website 2018
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../news/nvidia_self_driving_cars_talk_2017_06_21/" title="NVIDIA Self Driving Cars & Healthcare Talk, Singapore, June 2017" class="md-nav__link">
+      NVIDIA Self Driving Cars & Healthcare Talk, Singapore, June 2017
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../news/deep_learning_wizard_nvidia_inception_2018_05_01/" title="NVIDIA Inception Partner Status, Singapore, May 2017" class="md-nav__link">
+      NVIDIA Inception Partner Status, Singapore, May 2017
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" title="Introduction" class="md-nav__link">
+    Introduction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fashion-mnist-dataset-exploration" title="Fashion MNIST Dataset Exploration" class="md-nav__link">
+    Fashion MNIST Dataset Exploration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#imports" title="Imports" class="md-nav__link">
+    Imports
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load-dataset-step-1" title="Load Dataset (Step 1)" class="md-nav__link">
+    Load Dataset (Step 1)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load-data-loader-step-2" title="Load Data Loader (Step 2)" class="md-nav__link">
+    Load Data Loader (Step 2)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#labels" title="Labels" class="md-nav__link">
+    Labels
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sample-boot" title="Sample: Boot" class="md-nav__link">
+    Sample: Boot
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sample-shirt" title="Sample: shirt" class="md-nav__link">
+    Sample: shirt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sample-dress" title="Sample: dress" class="md-nav__link">
+    Sample: dress
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maximumminimum-pixel-values" title="Maximum/minimum pixel values" class="md-nav__link">
+    Maximum/minimum pixel values
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overcomplete-autoencoder" title="Overcomplete Autoencoder" class="md-nav__link">
+    Overcomplete Autoencoder
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sigmoid-function" title="Sigmoid Function" class="md-nav__link">
+    Sigmoid Function
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps" title="Steps" class="md-nav__link">
+    Steps
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-3-create-model-class" title="Step 3: Create Model Class" class="md-nav__link">
+    Step 3: Create Model Class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-instantiate-model-class" title="Step 4: Instantiate Model Class" class="md-nav__link">
+    Step 4: Instantiate Model Class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-instantiate-loss-class" title="Step 5: Instantiate Loss Class" class="md-nav__link">
+    Step 5: Instantiate Loss Class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-instantiate-optimizer-class" title="Step 6: Instantiate Optimizer Class" class="md-nav__link">
+    Step 6: Instantiate Optimizer Class
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inspect-parameter-groups" title="Inspect Parameter Groups" class="md-nav__link">
+    Inspect Parameter Groups
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-train-model" title="Step 7: Train Model" class="md-nav__link">
+    Step 7: Train Model
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#model-inference" title="Model Inference" class="md-nav__link">
+    Model Inference
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#raw-sample-1" title="Raw Sample 1" class="md-nav__link">
+    Raw Sample 1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-sample-1-noisy-to-denoised" title="Test Sample 1: Noisy to Denoised" class="md-nav__link">
+    Test Sample 1: Noisy to Denoised
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" title="Summary" class="md-nav__link">
+    Summary
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+        <li class="md-nav__item">
+          <a href="#__comments" title="Comments" class="md-nav__link md-nav__link--active">
+            Comments
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="overcomplete-autoencoders-with-pytorch">Overcomplete Autoencoders with PyTorch<a class="headerlink" href="#overcomplete-autoencoders-with-pytorch" title="Permanent link">&para;</a></h1>
+<div class="admonition tip">
+<p class="admonition-title">Run Jupyter Notebook</p>
+<p>You can run the code for this section in this <a href="https://github.com/ritchieng/deep-learning-wizard/blob/master/docs/deep_learning/practical_pytorch/pytorch_fc_overcomplete_ae.ipynb">jupyter notebook link</a>.</p>
+</div>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Recap!<ul>
+<li>An autoencoder's purpose is to learn an approximation of the identity function (mapping <span><span class="MathJax_Preview">x</span><script type="math/tex">x</script></span> to <span><span class="MathJax_Preview">\hat x</span><script type="math/tex">\hat x</script></span>).<ul>
+<li>Essentially we are trying to learn a function that can take our input <span><span class="MathJax_Preview">x</span><script type="math/tex">x</script></span> and recreate it <span><span class="MathJax_Preview">\hat x</span><script type="math/tex">\hat x</script></span>.<ul>
+<li>Technically we can do an exact recreation of our in-sample input if we use a very wide and deep neural network.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>In this particular tutorial, we will be covering denoising autoencoder through overcomplete encoders. <ul>
+<li>Essentially given noisy images, you can denoise and make them less noisy with this tutorial through overcomplete encoders.</li>
+</ul>
+</li>
+</ul>
+<p><img alt="" src="../images/autoencoder_0.png" /></p>
+<h2 id="fashion-mnist-dataset-exploration">Fashion MNIST Dataset Exploration<a class="headerlink" href="#fashion-mnist-dataset-exploration" title="Permanent link">&para;</a></h2>
+<h3 id="imports">Imports<a class="headerlink" href="#imports" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="kn">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="kn">as</span> <span class="nn">F</span>
+<span class="kn">import</span> <span class="nn">torchvision.transforms</span> <span class="kn">as</span> <span class="nn">transforms</span>
+<span class="kn">import</span> <span class="nn">torchvision.datasets</span> <span class="kn">as</span> <span class="nn">dsets</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;fivethirtyeight&#39;</span><span class="p">)</span>
+</pre></div>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Content</th>
+<th>Examples</th>
+<th>Size</th>
+<th>Link</th>
+<th>MD5 Checksum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="codehilite">train-images-idx3-ubyte.gz</code></td>
+<td>training set images</td>
+<td>60,000</td>
+<td>26 MBytes</td>
+<td><a href="http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-images-idx3-ubyte.gz">Download</a></td>
+<td><code class="codehilite">8d4fb7e6c68d591d4c3dfef9ec88bf0d</code></td>
+</tr>
+<tr>
+<td><code class="codehilite">train-labels-idx1-ubyte.gz</code></td>
+<td>training set labels</td>
+<td>60,000</td>
+<td>29 KBytes</td>
+<td><a href="http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-labels-idx1-ubyte.gz">Download</a></td>
+<td><code class="codehilite">25c81989df183df01b3e8a0aad5dffbe</code></td>
+</tr>
+<tr>
+<td><code class="codehilite">t10k-images-idx3-ubyte.gz</code></td>
+<td>test set images</td>
+<td>10,000</td>
+<td>4.3 MBytes</td>
+<td><a href="http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-images-idx3-ubyte.gz">Download</a></td>
+<td><code class="codehilite">bef4ecab320f06d8554ea6380940ec79</code></td>
+</tr>
+<tr>
+<td><code class="codehilite">t10k-labels-idx1-ubyte.gz</code></td>
+<td>test set labels</td>
+<td>10,000</td>
+<td>5.1 KBytes</td>
+<td><a href="http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz">Download</a></td>
+<td><code class="codehilite">bb300cfdad3c16e7a12a480ee83cd310</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="load-dataset-step-1">Load Dataset (Step 1)<a class="headerlink" href="#load-dataset-step-1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Typically we've been leveraging on <code class="codehilite">dsets.MNIST()</code>, now we simply change to <code class="codehilite">dsets.FashionMNIST</code>!</li>
+</ul>
+<div class="codehilite"><pre><span></span><span class="c1"># Fashion-MNIST data loader</span>
+<span class="n">train_dataset</span> <span class="o">=</span> <span class="n">dsets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s1">&#39;./data&#39;</span><span class="p">,</span>
+                                   <span class="n">train</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                   <span class="n">transform</span><span class="o">=</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+                                   <span class="n">download</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">test_dataset</span> <span class="o">=</span> <span class="n">dsets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s1">&#39;./data&#39;</span><span class="p">,</span>
+                                  <span class="n">train</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                  <span class="n">transform</span><span class="o">=</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">())</span>
+</pre></div>
+
+<div class="codehilite"><pre><span></span>Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-images-idx3-ubyte.gz
+Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-labels-idx1-ubyte.gz
+Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-images-idx3-ubyte.gz
+Downloading http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz
+Processing...
+Done!
+</pre></div>
+
+
+<h3 id="load-data-loader-step-2">Load Data Loader (Step 2)<a class="headerlink" href="#load-data-loader-step-2" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><span class="c1"># Batch size, iterations and epochs</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">n_iters</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">num_epochs</span> <span class="o">=</span> <span class="n">n_iters</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">)</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">)</span>
+<span class="n">num_epochs</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">)</span>
+
+<span class="n">train_loader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">train_dataset</span><span class="p">,</span> 
+                                           <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> 
+                                           <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">test_loader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">test_dataset</span><span class="p">,</span> 
+                                          <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> 
+                                          <span class="n">shuffle</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+<h3 id="labels">Labels<a class="headerlink" href="#labels" title="Permanent link">&para;</a></h3>
+<p>Each training and test example is assigned to one of the following labels:</p>
+<table>
+<thead>
+<tr>
+<th>Label</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>T-shirt/top</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Trouser</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Pullover</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Dress</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Coat</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Sandal</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Shirt</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Sneaker</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Bag</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Ankle boot</td>
+</tr>
+</tbody>
+</table>
+<h4 id="sample-boot">Sample: Boot<a class="headerlink" href="#sample-boot" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="c1"># Sample 0: boot</span>
+<span class="n">sample_num</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">show_img</span> <span class="o">=</span> <span class="n">train_dataset</span><span class="p">[</span><span class="n">sample_num</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">train_dataset</span><span class="p">[</span><span class="n">sample_num</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Label {label}&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">show_img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">);</span>
+</pre></div>
+
+<div class="codehilite"><pre><span></span>Label 9
+</pre></div>
+
+
+<p><img alt="png" src="../pytorch_fc_overcomplete_ae_files/pytorch_fc_overcomplete_ae_12_1.png" /></p>
+<h4 id="sample-shirt">Sample: shirt<a class="headerlink" href="#sample-shirt" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="c1"># Sample 1: shirt</span>
+<span class="n">sample_num</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">show_img</span> <span class="o">=</span> <span class="n">train_dataset</span><span class="p">[</span><span class="n">sample_num</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">train_dataset</span><span class="p">[</span><span class="n">sample_num</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Label {label}&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">show_img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">);</span>
+</pre></div>
+
+<div class="codehilite"><pre><span></span>Label 0
+</pre></div>
+
+
+<p><img alt="png" src="../pytorch_fc_overcomplete_ae_files/pytorch_fc_overcomplete_ae_14_1.png" /></p>
+<h4 id="sample-dress">Sample: dress<a class="headerlink" href="#sample-dress" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="c1"># Sample 3: dress</span>
+<span class="n">sample_num</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">show_img</span> <span class="o">=</span> <span class="n">train_dataset</span><span class="p">[</span><span class="n">sample_num</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">train_dataset</span><span class="p">[</span><span class="n">sample_num</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Label {label}&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">show_img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">);</span>
+</pre></div>
+
+<div class="codehilite"><pre><span></span>Label 3
+</pre></div>
+
+
+<p><img alt="png" src="../pytorch_fc_overcomplete_ae_files/pytorch_fc_overcomplete_ae_16_1.png" /></p>
+<h4 id="maximumminimum-pixel-values">Maximum/minimum pixel values<a class="headerlink" href="#maximumminimum-pixel-values" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Pixel values range from 0 to 1</li>
+</ul>
+<div class="codehilite"><pre><span></span><span class="n">min_pixel_value</span> <span class="o">=</span> <span class="n">train_dataset</span><span class="p">[</span><span class="n">sample_num</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<span class="n">max_pixel_value</span> <span class="o">=</span> <span class="n">train_dataset</span><span class="p">[</span><span class="n">sample_num</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Minimum pixel value: {min_pixel_value}&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Maximum pixel value: {max_pixel_value}&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="codehilite"><pre><span></span>Minimum pixel value: 0.0
+Maximum pixel value: 1.0
+</pre></div>
+
+
+<h2 id="overcomplete-autoencoder">Overcomplete Autoencoder<a class="headerlink" href="#overcomplete-autoencoder" title="Permanent link">&para;</a></h2>
+<h3 id="sigmoid-function">Sigmoid Function<a class="headerlink" href="#sigmoid-function" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Sigmoid function was introduced earlier, where the function allows to bound our output from 0 to 1 inclusive given our input.</li>
+<li>This is introduced and clarified here as we would want this in our final layer of our overcomplete autoencoder as we want to bound out final output to the pixels' range of 0 and 1.</li>
+</ul>
+<div class="codehilite"><pre><span></span><span class="c1"># Sigmoid function has function bounded by min=0 and max=1</span>
+<span class="c1"># So this will be what we will be using for the final layer&#39;s function</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Sigmoid Function&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="codehilite"><pre><span></span>Text(0.5, 1.0, &#39;Sigmoid Function&#39;)
+</pre></div>
+
+
+<p><img alt="png" src="../pytorch_fc_overcomplete_ae_files/pytorch_fc_overcomplete_ae_21_1.png" /></p>
+<h3 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">&para;</a></h3>
+<ul>
+<li>These steps should be familiar by now! Our famous 7 steps. But I will be adding one more step here, Step 8 where we run our inference.<ul>
+<li>Step 1: Load Dataset</li>
+<li>Step 2: Make Dataset Iterable</li>
+<li>Step 3: Create Model Class</li>
+<li>Step 4: Instantiate Model Class</li>
+<li>Step 5: Instantiate Loss Class</li>
+<li>Step 6: Instantiate Optimizer Class</li>
+<li>Step 7: Train Model</li>
+<li>Step 8: Model Inference</li>
+</ul>
+</li>
+</ul>
+<h4 id="step-3-create-model-class">Step 3: Create Model Class<a class="headerlink" href="#step-3-create-model-class" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="c1"># Model definition</span>
+<span class="k">class</span> <span class="nc">FullyConnectedAutoencoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># Encoder: affine function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">)</span>
+        <span class="c1"># Decoder: affine function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># Encoder: affine function</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># Encoder: non-linear function</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">leaky_relu</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+        <span class="c1"># Decoder: affine function</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc2</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="c1"># Decoder: non-linear function</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">out</span>
+</pre></div>
+
+<h4 id="step-4-instantiate-model-class">Step 4: Instantiate Model Class<a class="headerlink" href="#step-4-instantiate-model-class" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="c1"># Dimensions for overcomplete (larger latent representation)</span>
+<span class="n">input_dim</span> <span class="o">=</span> <span class="mi">28</span><span class="o">*</span><span class="mi">28</span>
+<span class="n">hidden_dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">input_dim</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">)</span>
+<span class="n">output_dim</span> <span class="o">=</span> <span class="n">input_dim</span>
+
+<span class="c1"># Instantiate Fully-connected Autoencoder (FC-AE)</span>
+<span class="c1"># And assign to model object</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">FullyConnectedAutoencoder</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">)</span>
+</pre></div>
+
+<h4 id="step-5-instantiate-loss-class">Step 5: Instantiate Loss Class<a class="headerlink" href="#step-5-instantiate-loss-class" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="c1"># We want to minimize the per pixel reconstruction loss</span>
+<span class="c1"># So we&#39;ve to use the mean squared error (MSE) loss</span>
+<span class="c1"># This is similar to our regression tasks&#39; loss</span>
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+</pre></div>
+
+<h4 id="step-6-instantiate-optimizer-class">Step 6: Instantiate Optimizer Class<a class="headerlink" href="#step-6-instantiate-optimizer-class" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="c1"># Using basic Adam optimizer</span>
+<span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">)</span>  
+</pre></div>
+
+<h5 id="inspect-parameter-groups">Inspect Parameter Groups<a class="headerlink" href="#inspect-parameter-groups" title="Permanent link">&para;</a></h5>
+<div class="codehilite"><pre><span></span><span class="c1"># Parameter inspection</span>
+<span class="n">num_params_group</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()))</span>
+<span class="k">for</span> <span class="n">group_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_params_group</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())[</span><span class="n">group_idx</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+</pre></div>
+
+<div class="codehilite"><pre><span></span>torch.Size([1176, 784])
+torch.Size([1176])
+torch.Size([784, 1176])
+torch.Size([784])
+</pre></div>
+
+
+<h4 id="step-7-train-model">Step 7: Train Model<a class="headerlink" href="#step-7-train-model" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Take note there's a critical line of <code class="codehilite">dropout = nn.Dropout(0.5)</code> here which basically allows us to make noisy images from our original Fashion MNIST images.</li>
+<li>It basically drops out 50% of all pixels randomly.</li>
+</ul>
+<div class="codehilite"><pre><span></span><span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Dropout for creating noisy images</span>
+<span class="c1"># by dropping out pixel with a 50% probability</span>
+<span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">train_loader</span><span class="p">):</span>
+        <span class="c1"># Load images with gradient accumulation capabilities</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+
+        <span class="c1"># Noisy images</span>
+        <span class="n">noisy_images</span> <span class="o">=</span> <span class="n">dropout</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span> <span class="o">*</span> <span class="n">images</span>
+
+        <span class="c1"># Clear gradients w.r.t. parameters</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+
+        <span class="c1"># Forward pass to get output</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">noisy_images</span><span class="p">)</span>
+
+        <span class="c1"># Calculate Loss: MSE Loss based on pixel-to-pixel comparison</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">images</span><span class="p">)</span>
+
+        <span class="c1"># Getting gradients w.r.t. parameters via backpropagation</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+        <span class="c1"># Updating parameters via gradient descent</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">%</span> <span class="mi">500</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Calculate MSE Test Loss</span>
+            <span class="n">total_test_loss</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">total_samples</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># Iterate through test dataset</span>
+            <span class="k">for</span> <span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">test_loader</span><span class="p">:</span>
+                <span class="c1"># Noisy images</span>
+                <span class="n">noisy_images</span> <span class="o">=</span> <span class="n">dropout</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span> <span class="o">*</span> <span class="n">images</span>
+
+                <span class="c1"># Forward pass only to get logits/output</span>
+                <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">noisy_images</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">))</span>
+
+                <span class="c1"># Test loss</span>
+                <span class="n">test_loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">))</span>
+
+                <span class="c1"># Total number of labels</span>
+                <span class="n">total_samples</span> <span class="o">+=</span> <span class="n">labels</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+                <span class="c1"># Total test loss</span>
+                <span class="n">total_test_loss</span> <span class="o">+=</span> <span class="n">test_loss</span>
+
+            <span class="n">mean_test_loss</span> <span class="o">=</span> <span class="n">total_test_loss</span> <span class="o">/</span> <span class="n">total_samples</span>
+
+            <span class="c1"># Print Loss</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Iteration: {idx}. Average Test Loss: {mean_test_loss.item()}.&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="codehilite"><pre><span></span><span class="n">Iteration</span><span class="o">:</span> <span class="mi">500</span><span class="o">.</span> <span class="n">Average</span> <span class="n">Test</span> <span class="n">Loss</span><span class="o">:</span> <span class="mf">0.0001664187147980556</span><span class="o">.</span>
+<span class="n">Iteration</span><span class="o">:</span> <span class="mi">1000</span><span class="o">.</span> <span class="n">Average</span> <span class="n">Test</span> <span class="n">Loss</span><span class="o">:</span> <span class="mf">0.00014121478307060897</span><span class="o">.</span>
+<span class="n">Iteration</span><span class="o">:</span> <span class="mi">1500</span><span class="o">.</span> <span class="n">Average</span> <span class="n">Test</span> <span class="n">Loss</span><span class="o">:</span> <span class="mf">0.0001341506722383201</span><span class="o">.</span>
+<span class="n">Iteration</span><span class="o">:</span> <span class="mi">2000</span><span class="o">.</span> <span class="n">Average</span> <span class="n">Test</span> <span class="n">Loss</span><span class="o">:</span> <span class="mf">0.0001252180663868785</span><span class="o">.</span>
+<span class="n">Iteration</span><span class="o">:</span> <span class="mi">2500</span><span class="o">.</span> <span class="n">Average</span> <span class="n">Test</span> <span class="n">Loss</span><span class="o">:</span> <span class="mf">0.00012206179235363379</span><span class="o">.</span>
+<span class="n">Iteration</span><span class="o">:</span> <span class="mi">3000</span><span class="o">.</span> <span class="n">Average</span> <span class="n">Test</span> <span class="n">Loss</span><span class="o">:</span> <span class="mf">0.00011766648094635457</span><span class="o">.</span>
+<span class="n">Iteration</span><span class="o">:</span> <span class="mi">3500</span><span class="o">.</span> <span class="n">Average</span> <span class="n">Test</span> <span class="n">Loss</span><span class="o">:</span> <span class="mf">0.00011584569438127801</span><span class="o">.</span>
+<span class="n">Iteration</span><span class="o">:</span> <span class="mi">4000</span><span class="o">.</span> <span class="n">Average</span> <span class="n">Test</span> <span class="n">Loss</span><span class="o">:</span> <span class="mf">0.00011396891932236031</span><span class="o">.</span>
+<span class="n">Iteration</span><span class="o">:</span> <span class="mi">4500</span><span class="o">.</span> <span class="n">Average</span> <span class="n">Test</span> <span class="n">Loss</span><span class="o">:</span> <span class="mf">0.00011224475019844249</span><span class="o">.</span>
+</pre></div>
+
+
+<h4 id="model-inference">Model Inference<a class="headerlink" href="#model-inference" title="Permanent link">&para;</a></h4>
+<h5 id="raw-sample-1">Raw Sample 1<a class="headerlink" href="#raw-sample-1" title="Permanent link">&para;</a></h5>
+<div class="codehilite"><pre><span></span><span class="c1"># Test sample: Raw</span>
+<span class="n">sample_num</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">raw_img</span> <span class="o">=</span> <span class="n">test_dataset</span><span class="p">[</span><span class="n">sample_num</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">show_img</span> <span class="o">=</span> <span class="n">raw_img</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">test_dataset</span><span class="p">[</span><span class="n">sample_num</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Label {label}&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">show_img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">);</span>
+</pre></div>
+
+<div class="codehilite"><pre><span></span>Label 4
+</pre></div>
+
+
+<p><img alt="png" src="../pytorch_fc_overcomplete_ae_files/pytorch_fc_overcomplete_ae_37_1.png" /></p>
+<h5 id="test-sample-1-noisy-to-denoised">Test Sample 1: Noisy to Denoised<a class="headerlink" href="#test-sample-1-noisy-to-denoised" title="Permanent link">&para;</a></h5>
+<div class="codehilite"><pre><span></span><span class="c1"># Test sample: Noisy</span>
+<span class="n">sample_num</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">raw_img</span> <span class="o">=</span> <span class="n">test_dataset</span><span class="p">[</span><span class="n">sample_num</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">noisy_image</span> <span class="o">=</span> <span class="n">dropout</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">raw_img</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span> <span class="o">*</span> <span class="n">raw_img</span>
+<span class="n">show_img</span> <span class="o">=</span> <span class="n">noisy_image</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">test_dataset</span><span class="p">[</span><span class="n">sample_num</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Label {label}&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">show_img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">);</span>
+</pre></div>
+
+<div class="codehilite"><pre><span></span>Label 4
+</pre></div>
+
+
+<p><img alt="png" src="../pytorch_fc_overcomplete_ae_files/pytorch_fc_overcomplete_ae_39_1.png" /></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Introduction<ul>
+<li>Recap of Autoencoders</li>
+<li>Introduction of denoising autoencoders</li>
+</ul>
+</li>
+<li>Dataset Exploration<ul>
+<li>Fashion MNIST<ul>
+<li>10 classes</li>
+<li>Similar to MNIST but fashion images instead of digits</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>8 Step</strong> Model Building Recap<ul>
+<li>Step 1: Load Dataset</li>
+<li>Step 2: Make Dataset Iterable</li>
+<li>Step 3: Create Model Class</li>
+<li>Step 4: Instantiate Model Class</li>
+<li>Step 5: Instantiate Loss Class</li>
+<li>Step 6: Instantiate Optimizer Class</li>
+<li>Step 7: Train Model</li>
+<li>Step 8: Model Inference<ul>
+<li>Raw Sample 1</li>
+<li>Noisy to Denoised Sample 1</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+                
+                  
+                
+              
+              
+                
+
+
+  <h2 id="__comments">Comments</h2>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_fc_overcomplete_ae/";
+      this.page.identifier =
+        "deep_learning/practical_pytorch/pytorch_fc_overcomplete_ae/";
+    };
+    (function() {
+      var d = document, s = d.createElement("script");
+      s.src = "//deep-learning-wizard.disqus.com/embed.js";
+      s.setAttribute("data-timestamp", +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="deep_learning/practical_pytorch/pytorch_autoencoder/" title="Autoencoders (AE)" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Autoencoders (AE)
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="deep_learning/boosting_models_pytorch/derivative_gradient_jacobian/" title="Derivative, Gradient and Jacobian" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Derivative, Gradient and Jacobian
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2019 Deep Learning Wizard
+          </div>
+        
+        proudly an
+        <a href="http://www.nvidia.com/page/home.html">NVIDIA Inception Partner</a> and supported by the
+        <a href="https://aws.amazon.com/activate/">Amazon AWS Activate Programme</a> by
+        <a href="https://www.ritchieng.com/">
+          Ritchie Ng</a>
+      </div>
+      
+        
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="../../../assets/fonts/font-awesome.css">
+    
+      <a href="https://github.com/ritchieng" class="md-footer-social__link fa fa-github"></a>
+    
+      <a href="https://www.facebook.com/DeepLearningWizard/" class="md-footer-social__link fa fa-facebook"></a>
+    
+      <a href="https://www.linkedin.com/company/deeplearningwizard/" class="md-footer-social__link fa fa-linkedin"></a>
+    
+  </div>
+
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/application.583bbe55.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:"../../.."}})</script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+    
+      
+        <script>!function(e,a,t,n,o,c,i){e.GoogleAnalyticsObject=o,e.ga=e.ga||function(){(e.ga.q=e.ga.q||[]).push(arguments)},e.ga.l=1*new Date,c=a.createElement(t),i=a.getElementsByTagName(t)[0],c.async=1,c.src="https://www.google-analytics.com/analytics.js",i.parentNode.insertBefore(c,i)}(window,document,"script",0,"ga"),ga("create","UA-122083328-1","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");if(Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var a=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",a,e.href)})}),document.forms.search){var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}</script>
+      
+    
+  </body>
+</html>
